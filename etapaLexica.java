@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,9 +55,16 @@ public class etapaLexica {
     }
     
     public static List<lexema> analisisLexico(List<linea> lLineas){
+        List<lexema> lLexemas = new ArrayList<lexema>();
         
-        return null;
+        for (linea line : lLineas){
+            
+        }
+            
+        return lLexemas;
     }
+
+    
 }
 
 class lexema{
