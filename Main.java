@@ -21,9 +21,10 @@ public class Main {
         try{
             //Tabla de tokens
             List<lexema> lLexemas = new ArrayList<lexema>();
+            List<linea> lLineas = new ArrayList<linea>();
 
             //Proceso
-            List<linea> lLineas = leerArchivo(sPath);
+            lLineas = leerArchivo(sPath);
 
             lLexemas = etapaLexica.analisisLexico(lLineas);
             
