@@ -61,7 +61,7 @@ public class etapaLexica {
         List<lexema> lLexemas = new ArrayList<lexema>();
         
         for (linea line : lLineas){
-            lLexemas = analizarTokens(line);
+            lLexemas.addAll(analizarTokens(line));
         }
             
         return lLexemas;
@@ -77,7 +77,7 @@ public class etapaLexica {
             if(lex.token == -78 || lex.token == -63){
                 //si es String se agrega, si es comentario se ignora
                 if(lex.token == -63){
-                    lexemasFinales.add(new lexema(lex.cadena, -78, -1, line.iNumeroLinea));
+                    lexemasFinales.add(lex);
                 }
                 continue;
             }
