@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class etapaLexica {
     public static HashMap<String, Integer> tablaSimbolos = new HashMap<>();
@@ -52,19 +54,96 @@ public class etapaLexica {
         tablaSimbolos.put(";", -75);
         tablaSimbolos.put(",", -76);
         tablaSimbolos.put(":", -77);
+        tablaSimbolos.put("comentario", -78);
     }
     
     public static List<lexema> analisisLexico(List<linea> lLineas){
         List<lexema> lLexemas = new ArrayList<lexema>();
         
         for (linea line : lLineas){
-            
+            lLexemas = analizarTokens(line);
         }
             
         return lLexemas;
     }
 
+    public static List<lexema> analizarTokens (linea line) {
+        List<lexema> lexemasFinales = new ArrayList<lexema>();
+
+        List<lexema> lexemas = quitarComentarioString(line);
+
+        for(lexema lex : lexemas){
+            //comentario o string
+            if(lex.token == -78 || lex.token == -63){
+                //si es String se agrega, si es comentario se ignora
+                if(lex.token == -63){
+                    lexemasFinales.add(new lexema(lex.cadena, -78, -1, line.iNumeroLinea));
+                }
+                continue;
+            }
+
+            String cadena = lex.cadena;
+            Pattern pattern = Pattern.compile(":=|<=|>=|==|!=|\\|\\||\\||-?\\d+\\.\\d*|[-+*;,<>():!]|\\d+!|\\b[a-zA-Z\\d_]+\\b[#%&$?]*|\\.[^ \\t\\n\\r\\f\\v]+");
+            Matcher matcher = pattern.matcher(cadena);
+
+            while (matcher.find()) {
+                lexemasFinales.add(new lexema(matcher.group().trim(), line.iNumeroLinea));            
+            }
+        }
+
+        for (lexema lex : lexemasFinales) {
+            //si no es string
+            if(lex.token != -63){
+                int valorToken = getValorToken(lex.cadena);
+                int posicionTabla = -1;
+                
+                //Los identificadores tiene valor de -2
+                if (valorToken == -51 || valorToken == -52 || valorToken == -53 || valorToken == -54 || valorToken == -55) {
+                    posicionTabla = -2;
+                }
+                
+                lex.token = valorToken;
+                
+                lex.posicionTabla = posicionTabla;
+            }
+            
+        }
+        
+        return lexemasFinales;
+    }
+
     
+
+    public static boolean esNumEntero(String cadena) {
+        return cadena.matches("\\d+");
+    }
+
+
+    public static boolean esNumReal(String cadena) {
+        return cadena.matches("\\d+\\.\\d+");
+    }
+
+    public static int getValorToken(String token) {
+        // if (tablaSimbolos.containsKey(token)) {
+        //     return tablaSimbolos.get(token);
+        // } else if (esNumEntero(token)) {
+        //     return -61;
+        // } else if (esNumReal(token)) {
+        //     return -62;
+        // } else if (token.matches("\".*\"")) {
+        //     return -63;
+        // } else if (token.matches("[a-zA-Z]+[a-zA-Z0-9_]*")) {
+        //     return -55;
+        // } else {
+        //     return -99;
+        // }
+        return 0;
+    }
+    
+    public static List<lexema> quitarComentarioString(linea line){
+        return null;
+    
+    }
 }
 
 class lexema{

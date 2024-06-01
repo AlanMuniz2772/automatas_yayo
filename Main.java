@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,14 @@ public class Main {
             lLexemas = etapaLexica.analisisLexico(lLineas);
             
             etapaSintactica.analisisSintactico(lLexemas);
+
+            for (lexema lex : lLexemas) {
+                System.out.println(lex);
+            }
+
+            //Generar archivo de salida
+            generarArchivoSalida(lLexemas);
+
 
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Error en compilar(): " + e.getMessage());
@@ -62,6 +72,29 @@ public class Main {
             return null;
         }
     }
+
+    public static void generarArchivoSalida(List<lexema> lLexemas) {
+        try (FileWriter writer = new FileWriter("salida.txt")) {
+            writer.write("Tokens válidos:\n");
+            for(lexema lex : lLexemas) {
+                if(lex.token != -99) {
+                    writer.write(lex + "\n");
+                }
+            }
+
+            writer.write("\nTokens no válidos:\n");
+            for(lexema lex : lLexemas) {
+                if(lex.token == -99) {
+                    writer.write(lex + "\n");
+                }
+            }
+
+            writer.flush();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error al generar archivo de salida: " + e.getMessage());
+        }
+    }
+
 }
 
 class linea{
