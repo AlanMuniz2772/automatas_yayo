@@ -1,6 +1,18 @@
-program 
-hola1? 
-63
-+65
-
-//Hola//
+program nombre?;
+var
+    int : uno&, dos& ;
+    real : tres% ;
+    string : cuatro#;
+    bool : cinco$ ;
+begin
+    uno& := 10 + ( 39 * dos& ) ;
+    cinco$ := ( uno& <= 10 );
+    if ( uno& > 10 ) then
+        write "Uno es mayor que 10";
+    else
+        write "Uno no es mayor que 10";
+    end
+    while ( dos& > 5 ) do
+        write "Dos es mayor que 5";
+    end
+end
