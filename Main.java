@@ -12,7 +12,11 @@ public class Main {
     public static void main(String[] args) {
         try {
             String sPath = JOptionPane.showInputDialog("Ingrese direccion de archivo de entrada: ");
-            compilar(sPath);
+            if (sPath != null && !sPath.trim().isEmpty()) {
+                compilar(sPath);
+            } else {
+                JOptionPane.showMessageDialog(null, "No se proporcionó una dirección de archivo válida");
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error en main: " + e.getMessage());
         }
@@ -97,12 +101,12 @@ public class Main {
 
 }
 
-class linea{
-    String sLinea;
-    int iNumeroLinea;
+//class linea{
+    //String sLinea;
+    //int iNumeroLinea;
 
-    public linea(String sLinea, int iNumeroLinea){
-        this.sLinea = sLinea;
-        this.iNumeroLinea = iNumeroLinea;
-    }
-}
+    //public linea(String sLinea, int iNumeroLinea){
+    //    this.sLinea = sLinea;
+    //    this.iNumeroLinea = iNumeroLinea;
+   // }
+//}

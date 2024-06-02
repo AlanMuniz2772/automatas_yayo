@@ -83,7 +83,8 @@ public class etapaLexica {
             }
 
             String cadena = lex.cadena;
-            Pattern pattern = Pattern.compile(":=|<=|>=|==|!=|\\|\\||\\||-?\\d+\\.\\d*|[-+*;,<>():!]|\\d+!|\\b[a-zA-Z\\d_]+\\b[#%&$?]*|\\.[^ \\t\\n\\r\\f\\v]+");
+            //Pattern pattern = Pattern.compile(":=|<=|>=|==|!=|\\|\\||\\||-?\\d+\\.\\d*|[-+*;,<>():!]|\\d+!|\\b[a-zA-Z\\d_]+\\b[#%&$?]*|\\.[^ \\t\\n\\r\\f\\v]+");
+            Pattern pattern = Pattern.compile(":=|<=|>=|==|!=|\\|\\||\\||-?\\d+\\.\\d*|[-+*;,<>():!]|\\d+|\\b[a-zA-Z\\d_]+\\b[#%&$?]*|\\.[^ \\t\\n\\r\\f\\v]+");
             Matcher matcher = pattern.matcher(cadena);
 
             while (matcher.find()) {
@@ -124,25 +125,40 @@ public class etapaLexica {
     }
 
     public static int getValorToken(String token) {
-        // if (tablaSimbolos.containsKey(token)) {
-        //     return tablaSimbolos.get(token);
-        // } else if (esNumEntero(token)) {
-        //     return -61;
-        // } else if (esNumReal(token)) {
-        //     return -62;
-        // } else if (token.matches("\".*\"")) {
-        //     return -63;
-        // } else if (token.matches("[a-zA-Z]+[a-zA-Z0-9_]*")) {
-        //     return -55;
-        // } else {
-        //     return -99;
-        // }
-        return 0;
+        if (tablaSimbolos.containsKey(token)) {
+            return tablaSimbolos.get(token);
+        } else if (esNumEntero(token)) {
+            return -61;
+        } else if (esNumReal(token)) {
+            return -62;
+        } else if (token.matches("\".*\"")) {
+            return -63;
+        } else if (token.matches("[a-zA-Z]+[a-zA-Z0-9_]*")) {
+            return -55;
+        } else {
+            return -99;
+        }
     }
     
     public static List<lexema> quitarComentarioString(linea line){
-        return null;
-    
+        List<lexema> lexemas = new ArrayList<>();
+        String contenido = line.cadena;
+
+        //Extraer comentarios y Strings
+        Pattern pattern = Pattern.compile("//.*|\".*?\"|[^\\s]+");
+        Matcher matcher = pattern.matcher(contenido);
+
+        while (matcher.find()) {
+            String token = matcher.group().trim();
+            if(token.startsWith("//")) {
+                lexemas.add(new lexema(token, -78, -1, line.iNumeroLinea));
+            } else if (token.startsWith("\"") && token.endsWith("\"")) {
+                lexemas.add(new lexema(token, -63, -1, line.iNumeroLinea));
+            } else {
+                lexemas.add(new lexema(token, 0, -1, line.iNumeroLinea));
+            }
+        }
+        return lexemas;
     }
 }
 
@@ -152,9 +168,11 @@ class lexema{
     int posicionTabla;
     int numLinea; 
 
-    lexema(String cadena, int numLinea) {
+    public lexema(String cadena, int numLinea) {
         this.cadena = cadena;
         this.numLinea = numLinea;
+        this.token = 0;
+        this.posicionTabla = -1;
     }
 
     public lexema(String cadena, int token, int posicionTabla, int numLinea) {
@@ -166,6 +184,16 @@ class lexema{
     
     @Override
     public String toString() {
-        return (this.cadena+", "+this.token+", "+this.posicionTabla+", "+this.numLinea);
+        return (this.cadena + ", " + this.token + ", " + this.posicionTabla + ", " + this.numLinea);
+    }
+}
+
+class linea {
+    String cadena;
+    int iNumeroLinea;
+
+    public linea(String cadena, int iNumeroLinea) {
+        this.cadena = cadena;
+        this.iNumeroLinea = iNumeroLinea;
     }
 }
